@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/last_login_try_header"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <EditText
+        android:id="@+id/get_pin_puk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword" >
+        <requestFocus />
+    </EditText>
+
+     <Button
+        android:id="@+id/button_login_unblock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="loginOrUnblock"
+        android:text="@string/button_login_unblock" />
+     
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Muscle_Card_on_Android</string>
+    <string name="servicedesc">Is supposed to handle the APDUs coming in and sending responses</string>
+    <string name="aiddescription">Should be the proper AID for my usecase.</string>
+    <string name="title_activity_ask_for_ok">AskForOk</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

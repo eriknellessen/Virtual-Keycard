@@ -1,0 +1,144 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="de.nellessen.virtual_keycard.CreatePinPersistent"
+    tools:ignore="MergeRootFrame">
+
+    <TextView
+        android:id="@+id/set_pin_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/create_pin_persistent_header"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/set_pin_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/set_pin_header"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <TextView
+        android:id="@+id/new_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/set_pin_no"
+        android:text="@string/new_pin"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/get_new_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/set_pin_no"
+        android:layout_toRightOf="@id/new_pin"
+        android:ems="10"
+        android:inputType="textPassword" >
+
+        <requestFocus />
+    </EditText>
+    
+    <TextView
+        android:id="@+id/new_pin_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/get_new_pin"
+        android:text="@string/new_pin_again"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <EditText
+        android:id="@+id/get_new_pin_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/get_new_pin"
+        android:layout_toRightOf="@id/new_pin_again"
+        android:ems="10"
+        android:inputType="textPassword" >
+    </EditText>
+    
+    <TextView
+        android:id="@+id/max_attempts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/get_new_pin_again"
+        android:text="@string/max_attempts"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/get_max_attempts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/get_new_pin_again"
+        android:layout_toRightOf="@id/max_attempts"
+        android:ems="10"
+        android:inputType="number" />
+    
+    <TextView
+        android:id="@+id/new_unblock_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/get_max_attempts"
+        android:text="@string/new_unblock_value"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/get_new_unblock_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/get_max_attempts"
+        android:layout_toRightOf="@id/new_unblock_value"
+        android:ems="10"
+        android:inputType="textPassword" >
+    </EditText>
+    
+    <TextView
+        android:id="@+id/new_unblock_value_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/get_new_unblock_value"
+        android:text="@string/new_unblock_value_again"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <EditText
+        android:id="@+id/get_new_unblock_value_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/get_new_unblock_value"
+        android:layout_toRightOf="@id/new_unblock_value_again"
+        android:ems="10"
+        android:inputType="textPassword" >
+    </EditText>
+
+    <Button
+        android:id="@+id/button_set_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="setIt"
+        android:text="@string/button_set_pin" />
+    
+    <TextView
+        android:id="@+id/set_pin_error_messages"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/get_new_unblock_value_again"
+        android:layout_above="@id/button_set_pin"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>
