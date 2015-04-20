@@ -27,7 +27,7 @@ make ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
 
 I used adt-bundle-linux-x86-20131030 as SDK. The OS on which I build the app is Debian Jessie (32 Bit).
 
-# Building
+# Installing
 
 Executing the command
 

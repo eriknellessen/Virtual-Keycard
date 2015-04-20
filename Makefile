@@ -35,6 +35,7 @@ OpenSC:
 	cd $(VSMARTCARD) ;\
 	git submodule init ;\
 	git submodule update ;\
+	git checkout 4bc1a37c4ed84bd7d1109ef1522a76add0277338 ;\
 	cd $(VSMARTCARD)/npa/src/opensc ;\
 	git checkout d72324ddf58f594a00c6b56b6abb8c4937b0794e ;\
 	autoreconf --verbose --install ;\
