@@ -88,16 +88,24 @@ public class MainActivity extends Activity implements AskForOk, LastLoginTryWith
 		showStatusInfoField.setText(textToShow, 0, textToShow.length);
     }
     
+    //Idea taken from http://stackoverflow.com/questions/17899328/this-handler-class-should-be-static-or-leaks-might-occur-com-test-test3-ui-main
+  	private static class HandlerClass extends Handler {
+
+  		public HandlerClass() {
+  		}
+
+  		@Override
+  		public void handleMessage(Message msg) {
+  			throw new RuntimeException();
+  		}
+
+  	};
+    
     @Override
     public boolean askForOk(String data){
     	//Code taken from http://stackoverflow.com/questions/2028697/dialogs-alertdialogs-how-to-block-execution-while-dialog-is-up-net-style
     	// make a handler that throws a runtime exception when a message is received
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message mesg) {
-                throw new RuntimeException();
-            } 
-        };
+    	final HandlerClass handler = new HandlerClass();
 
         // make a text input dialog and show it
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
