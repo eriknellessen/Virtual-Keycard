@@ -41,7 +41,7 @@ will install the app on your smartphone. Make sure it is connected to your PC an
 
 # Using
 
-For usage, see page 48 and following of the paper.
+For usage, see page 48 and following of the bachelor's thesis.
 
 To get a certificate onto the smartphone, you may use the Makefile.
 
@@ -91,6 +91,6 @@ The last step is to store the certificate on the smartphone:
 make store-certificate
 ```
 
-Now you can configure Thunderbird/Icedove as described in the paper on page 51 and start decrypting/signing e-mails!
+Now you can configure Thunderbird/Icedove as described in the bachelor's thesis on page 51 and start decrypting/signing e-mails!
 
 Have fun!
