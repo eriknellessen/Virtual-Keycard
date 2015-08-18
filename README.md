@@ -2,7 +2,7 @@
 
 This software system allows you to decrypt and sign your e-mails with your smartphone instead of using a contactless smartcard. The smartphone communicates with your PC via NFC (as a contactless smartcard would).
 
-The paper can be found here:
+The associated bachelor's thesis can be found here:
 http://sar.informatik.hu-berlin.de/research/publications/SAR-PR-2014-08/SAR-PR-2014-08_.pdf
 
 Warning: This is just proof-of-concept code and should _NOT_ be used in
