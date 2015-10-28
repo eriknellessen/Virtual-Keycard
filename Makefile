@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 PREFIX= $(shell pwd)
-OPENPACE=$(PREFIX)/openpace
-VSMARTCARD=$(PREFIX)/vsmartcard
+OPENPACE=openpace
+VSMARTCARD=vsmartcard
 C_INCLUDE_PATH=$(PREFIX)/include
 LD_LIBRARY_PATH=$(PREFIX)/lib:$(PREFIX)/lib64
 ENGINE_PKCS11=$(shell find /usr -iname engine_pkcs11.so 2>/dev/null | head -1)
@@ -24,6 +24,8 @@ all: virtualkeycard-OpenSC virtualkeycard-Android
 OpenPACE:
 	git clone https://github.com/frankmorgner/openpace.git $(OPENPACE) ;\
 	cd $(OPENPACE) ;\
+	git checkout 3d0ad92086a2ae617f9992711ba1da61036e8c6e ;\
+	sed -i 's/$$(GIT) clone --depth=10 git:\/\/openssl\.net\/openssl -b OpenSSL_1_0_2-stable $$(OPENSSL_DIR)/$$(GIT) clone --depth=100 https:\/\/github.com\/openssl\/openssl\.git -b OpenSSL_1_0_2-stable $$(OPENSSL_DIR)/g' src/Makefile.am ;\
 	autoreconf --verbose --install ;\
 	# with `--enable-openssl-install` OpenSSL will be downloaded and installed along with OpenPACE \
 	./configure --enable-openssl-install --prefix=$(PREFIX) ;\
@@ -36,14 +38,14 @@ OpenSC:
 	git submodule init ;\
 	git submodule update ;\
 	git checkout 4bc1a37c4ed84bd7d1109ef1522a76add0277338 ;\
-	cd $(VSMARTCARD)/npa/src/opensc ;\
+	cd npa/src/opensc ;\
 	git checkout d72324ddf58f594a00c6b56b6abb8c4937b0794e ;\
 	autoreconf --verbose --install ;\
 	export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH) ;\
 	# adding PKG_CONFIG_PATH here lets OpenSC use the patched OpenSSL \
 	./configure --prefix=$(PREFIX) PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig:$(PREFIX)/lib64/pkgconfig --enable-sm ;\
 	export C_INCLUDE_PATH=$(C_INCLUDE_PATH) ;\
-	make install && cd -
+	make install && cd - && cd ..
 
 #See http://frankmorgner.github.io/vsmartcard/npa/README.html
 libnpa:
@@ -55,19 +57,19 @@ libnpa:
 Dependencies: OpenPACE OpenSC libnpa
 
 virtualkeycard-OpenSC: Dependencies
-	cp opensc-files/card-virtualkeycard.c $(PREFIX)/vsmartcard/npa/src/opensc/src/libopensc/ || echo "Never mind."
-	cp opensc-files/pkcs15-virtualkeycard.c $(PREFIX)/vsmartcard/npa/src/opensc/src/pkcs15init/ || echo "Never mind."
+	cp opensc-files/card-virtualkeycard.c $(VSMARTCARD)/npa/src/opensc/src/libopensc/ || echo "Never mind."
+	cp opensc-files/pkcs15-virtualkeycard.c $(VSMARTCARD)/npa/src/opensc/src/pkcs15init/ || echo "Never mind."
 	cp opensc-files/virtualkeycard.profile $(PREFIX)/share/opensc/ || echo "Never mind."
 	
 	export C_INCLUDE_PATH=$(C_INCLUDE_PATH)
 	
 	#Build driver "virtualkeycard":
-	cd $(PREFIX)/vsmartcard/npa/src/opensc/src/libopensc/ ;\
+	cd $(VSMARTCARD)/npa/src/opensc/src/libopensc/ ;\
 	gcc -DHAVE_CONFIG_H -I . -I ../.. -DOPENSC_CONF_PATH=\"$(PREFIX)/etc/opensc/opensc.conf\" -I ../../src -I$(PREFIX)/include -pthread -I/usr/include/PCSC -fno-strict-aliasing -g -O2 -Wall -Wextra -Wno-unused-parameter -Werror=declaration-after-statement -MT card-virtualkeycard.lo -MD -MP -MF .deps/card-virtualkeycard.Tpo -c card-virtualkeycard.c -fPIC -DPIC -o .libs/card-virtualkeycard.o ;\
 	gcc -shared -fPIC -DPIC -o .libs/card-virtualkeycard.so .libs/muscle.o .libs/muscle-filesystem.o .libs/card.o .libs/sc.o .libs/card-virtualkeycard.o -Wl,-rpath -Wl,$(PREFIX)/lib -Wl,-rpath -Wl,$(PREFIX)/lib64 -L$(PREFIX)/lib/ -L$(PREFIX)/lib64/ -lnpa -lcrypto -lopensc
 	
 	#Build PKCS15-driver for virtualkeycard:
-	cd $(PREFIX)/vsmartcard/npa/src/opensc/src/pkcs15init/ ;\
+	cd $(VSMARTCARD)/npa/src/opensc/src/pkcs15init/ ;\
 	gcc -DHAVE_CONFIG_H -I . -I ../.. -DSC_PKCS15_PROFILE_DIRECTORY=\"$(PREFIX)/share/opensc/\" -I ../../src -I$(PREFIX)/include -fno-strict-aliasing -g -O2 -Wall -Wextra -Wno-unused-parameter -Werror=declaration-after-statement -MT pkcs15-virtualkeycard.lo -MD -MP -MF .deps/pkcs15-virtualkeycard.Tpo -c pkcs15-virtualkeycard.c -fPIC -DPIC -o .libs/pkcs15-virtualkeycard.o ;\
 	gcc -shared -fPIC -DPIC -o .libs/pkcs15-virtualkeycard.so .libs/pkcs15-virtualkeycard.o .libs/profile.o ../common/compat_strlcpy.o
 
@@ -91,7 +93,7 @@ virtualkeycard-Android:
 	ant debug
 
 Android-install:
-	$(ANDROID_SDK_ROOT)/platform-tools/adb install -r $(PREFIX)/android-projects/Virtual_Keycard/bin/MainActivity-debug.apk
+	$(ANDROID_SDK_ROOT)/platform-tools/adb install -r android-projects/Virtual_Keycard/bin/MainActivity-debug.apk
 
 create-pkcs15-files:
 	export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH)

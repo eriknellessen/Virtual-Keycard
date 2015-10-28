@@ -19,6 +19,8 @@ The Android app only works on Android 4.4 Kitkat and higher.
 
 # Building
 
+Build status on Travis CI: [![Build Status](https://travis-ci.org/eriknellessen/Virtual-Keycard.svg?branch=travis)](https://travis-ci.org/eriknellessen/Virtual-Keycard)
+
 To create this app, eclipse was used.
 
 To use the app, build it using the makefile in the following way:
