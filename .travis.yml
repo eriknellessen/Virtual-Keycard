@@ -1,6 +1,6 @@
 language: c
 
-sudo: required
+sudo: false
 
 env:
   global:
@@ -9,6 +9,17 @@ env:
 compiler:
   - clang
   - gcc
+  
+addons:
+  apt:
+    packages:
+      #See https://github.com/JakeWharton/sdk-manager-plugin/issues/13
+      - libstdc++6:i386
+      - lib32z1
+      - expect
+      - help2man
+      - libpcsclite-dev
+      - gengetopt
 
 before_install:
   - wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
@@ -17,9 +28,6 @@ before_install:
   - echo "y" | android-sdk-linux/tools/android update sdk -s --no-ui --all --filter platform-tools
   - echo "y" | android-sdk-linux/tools/android update sdk -s --no-ui --all --filter android-19
   - echo "y" | android-sdk-linux/tools/android update sdk -s --no-ui --all --filter build-tools-19.1.0
-  #See https://github.com/JakeWharton/sdk-manager-plugin/issues/13
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libstdc++6:i386 lib32z1 expect help2man libpcsclite-dev gengetopt
   
 install:
 
