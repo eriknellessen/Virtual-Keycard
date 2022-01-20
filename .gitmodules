@@ -1,0 +1,3 @@
+[submodule "android-projects/npa-emulator"]
+	path = android-projects/npa-emulator
+	url = https://github.com/eriknellessen/npa-emulator.git

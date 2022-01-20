@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "de.nellessen.virtual_keycard"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner
+            "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    lintOptions {
+          abortOnError false
+    }
+}
+
+repositories {
+	mavenLocal()
+}
+
+dependencies {
+	compile 'de.nellessen.muscle_card_on_android:app:0.1.0'
+	compile 'com.licel:jcardsim:2.2.2'
+	compile 'com.android.support:support-v4:25.0.0'
+}
