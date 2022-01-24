@@ -9,6 +9,9 @@
 
 image: openjdk:8-jdk
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 variables:
 
   # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
@@ -96,3 +99,12 @@ assembleDebug:
 #  stage: test
 #  script:
 #    - ./gradlew -Pci --console=plain :app:testDebug
+
+code_quality:
+  before_script:
+    - ''
+  stage: test
+  variables:
+    REPORT_FORMAT: html
+  artifacts:
+    paths: [gl-code-quality-report.html]
