@@ -29,7 +29,11 @@ OpenPACE:
 	autoreconf --verbose --install ;\
 	# with `--enable-openssl-install` OpenSSL will be downloaded and installed along with OpenPACE \
 	./configure --enable-openssl-install --prefix=$(PREFIX) ;\
-	make install && cd -
+	cd src/ ;\
+    make install-openssl ;\
+    cd - ;\
+    make install ;\
+    cd ../
 	
 #See http://frankmorgner.github.io/vsmartcard/npa/README.html
 OpenSC:

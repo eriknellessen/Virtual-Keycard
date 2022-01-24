@@ -32,7 +32,7 @@ variables:
 # Packages installation before running script
 before_script:
   - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 automake patch libtool pkg-config help2man gengetopt build-essential libpcsclite-dev
 
   # Setup path as android_home for moving/exporting the downloaded sdk into it
   - export ANDROID_HOME="${PWD}/android-home"
@@ -61,6 +61,7 @@ before_script:
   # Not necessary, but just for surity
   - chmod +x ./android-projects/Virtual_Keycard/gradlew
 
+.build_android_dependencies: &build_android_dependencies
   # Build npa-emulator
   - git submodule init
   - git submodule update
@@ -79,6 +80,7 @@ lintDebug:
   interruptible: true
   stage: build
   script:
+    - *build_android_dependencies
     - cd android-projects/Virtual_Keycard/
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
@@ -87,11 +89,71 @@ assembleDebug:
   interruptible: true
   stage: build
   script:
+    - *build_android_dependencies
     - cd android-projects/Virtual_Keycard/
     - ./gradlew assembleDebug
   artifacts:
     paths:
       - ./android-projects/Virtual_Keycard/app/build/outputs/
+
+# Build OpenSC with virtualkeycard driver
+buildOpenScDriver:
+  interruptible: true
+  stage: build
+  script:
+    - export PREFIX=$PWD
+    - git submodule update --init --recursive
+      # Build OpenPACE
+    - cd openpace/
+    - sed -i 's/\$(GIT) clone --depth=10 git:\/\/openssl\.net\/openssl -b OpenSSL_1_0_2-stable \$(OPENSSL_DIR)/\$(GIT) clone --depth=100 git:\/\/git.openssl.org\/openssl\.git -b OpenSSL_1_0_2-stable \$(OPENSSL_DIR)/g' src/Makefile.am
+    - autoreconf --verbose --install
+    - ./configure --enable-openssl-install --prefix=$PREFIX
+    - cd src/
+    - make install-openssl
+    - cd -
+    - make install
+    - cd ../
+    # Build OpenSC
+    - cd vsmartcard
+    - cd npa/src/opensc
+    - git checkout d72324ddf58f594a00c6b56b6abb8c4937b0794e
+    - autoreconf --verbose --install
+    - export LD_LIBRARY_PATH=$PREFIX/lib:$PREFIX/lib64
+    - ./configure --prefix=$PREFIX PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:$PREFIX/lib64/pkgconfig --enable-sm
+    - export C_INCLUDE_PATH=$PREFIX/include
+    - make install 
+    - cd -
+    - cd ..
+    # Build libnpa
+    - cd vsmartcard/npa
+    - autoreconf --verbose --install
+    - ./configure --prefix=$PREFIX PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:$PREFIX/lib64/pkgconfig OPENSC_LIBS="-L$PREFIX/lib -L$PREFIX/lib64 -lopensc -lcrypto"
+    - make install
+    - cd -
+    # Build virtualkeycard driver
+    - cp opensc-files/card-virtualkeycard.c vsmartcard/npa/src/opensc/src/libopensc/
+    - cp opensc-files/pkcs15-virtualkeycard.c vsmartcard/npa/src/opensc/src/pkcs15init/
+    - cp opensc-files/virtualkeycard.profile $PREFIX/share/opensc/
+    # Build driver "virtualkeycard":
+    - cd vsmartcard/npa/src/opensc/src/libopensc/
+    - gcc -DHAVE_CONFIG_H -I . -I ../.. -DOPENSC_CONF_PATH=\"$PREFIX/etc/opensc/opensc.conf\" -I ../../src -I$PREFIX/include -pthread -I/usr/include/PCSC -fno-strict-aliasing -g -O2 -Wall -Wextra -Wno-unused-parameter -Werror=declaration-after-statement -MT card-virtualkeycard.lo -MD -MP -MF .deps/card-virtualkeycard.Tpo -c card-virtualkeycard.c -fPIC -DPIC -o .libs/card-virtualkeycard.o
+    - gcc -shared -fPIC -DPIC -o .libs/card-virtualkeycard.so .libs/muscle.o .libs/muscle-filesystem.o .libs/card.o .libs/sc.o .libs/card-virtualkeycard.o -Wl,-rpath -Wl,$PREFIX/lib -Wl,-rpath -Wl,$PREFIX/lib64 -L$PREFIX/lib/ -L$PREFIX/lib64/ -lnpa -lcrypto -lopensc
+    - cd -
+    # Build PKCS15-driver for virtualkeycard:
+    - cd vsmartcard/npa/src/opensc/src/pkcs15init/
+    - gcc -DHAVE_CONFIG_H -I . -I ../.. -DSC_PKCS15_PROFILE_DIRECTORY=\"$PREFIX/share/opensc/\" -I ../../src -I$PREFIX/include -fno-strict-aliasing -g -O2 -Wall -Wextra -Wno-unused-parameter -Werror=declaration-after-statement -MT pkcs15-virtualkeycard.lo -MD -MP -MF .deps/pkcs15-virtualkeycard.Tpo -c pkcs15-virtualkeycard.c -fPIC -DPIC -o .libs/pkcs15-virtualkeycard.o
+    - gcc -shared -fPIC -DPIC -o .libs/pkcs15-virtualkeycard.so .libs/pkcs15-virtualkeycard.o .libs/profile.o ../common/compat_strlcpy.o
+    - cd -
+    # Expand path in patch
+    # Choosing other delimiters, %, for sed, so we do not have to mask the slashes in $(PREFIX)
+    - sed -i 's%$$PREFIX%$PREFIX%g' opensc-files/opensc.conf.patch
+    - cd $PREFIX/etc/
+    - patch < ../opensc-files/opensc.conf.patch
+    - cd -
+  artifacts:
+    paths:
+      - vsmartcard/npa/src/opensc/src/libopensc/.libs/card-virtualkeycard.so
+      - vsmartcard/npa/src/opensc/src/pkcs15init/.libs/pkcs15-virtualkeycard.so
 
 # Run all tests, if any fails, interrupt the pipeline(fail it)
 #debugTests:
