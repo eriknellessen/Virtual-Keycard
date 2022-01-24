@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+group = 'de.nellessen.muscle_card_on_android'
+version = '0.1.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().getUrl()) 
+        }
+    }
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner
+            "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    lintOptions {
+          abortOnError false
+    }
+}
+
+repositories {
+	mavenLocal()
+}
+
+dependencies {
+	compile 'com.npa.gui:app:0.1.0'
+	compile 'com.licel:jcardsim:2.2.2'
+	compile 'com.android.support:support-v4:25.0.0'
+}
