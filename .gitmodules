@@ -1,3 +1,9 @@
 [submodule "android-projects/npa-emulator"]
 	path = android-projects/npa-emulator
 	url = https://github.com/eriknellessen/npa-emulator.git
+[submodule "openpace"]
+	path = openpace
+	url = https://github.com/frankmorgner/openpace.git
+[submodule "vsmartcard"]
+	path = vsmartcard
+	url = https://github.com/frankmorgner/vsmartcard.git

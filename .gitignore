@@ -37,3 +37,9 @@ captures/
 
 # Keystore files
 *.jks
+
+# Build artifacts from building the C part
+include/
+lib/
+share/
+ssl/
