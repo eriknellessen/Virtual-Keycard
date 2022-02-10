@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply from: '../../jacoco.gradle'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -16,9 +18,15 @@ android {
         release {
             minifyEnabled false
         }
+        debug { 
+            testCoverageEnabled = true 
+        }
     }
     lintOptions {
           abortOnError false
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -30,4 +38,14 @@ dependencies {
 	compile 'de.nellessen.muscle_card_on_android:app:0.1.0'
 	compile 'com.licel:jcardsim:2.2.2'
 	compile 'com.android.support:support-v4:25.0.0'
+    testCompile 'junit:junit:4.13.2'
+    testCompile 'org.powermock:powermock-module-junit4:2.0.9'
+    testCompile 'org.powermock:powermock-api-mockito2:2.0.9'
+}
+
+tasks.withType(Test) {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
